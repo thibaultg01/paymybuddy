@@ -5,6 +5,7 @@ import com.paymybuddy.model.User;
 import com.paymybuddy.repository.UserRepository;
 import com.paymybuddy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +15,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public List<User> getAllUsers() {
@@ -26,11 +30,13 @@ public class UserServiceImpl implements UserService {
     	        .orElseThrow(() -> new ResourceNotFoundException("Utilisateur non trouvé avec l'id : " + id));
     }
 
+    
+
     @Override
     public User createUser(User user) {
+        System.out.println(user.getPassword());
         return userRepository.save(user);
     }
-    
     @Override
     public User updateUser(Long id, User updatedUser) {
         User existingUser = userRepository.findById(id)
@@ -43,7 +49,7 @@ public class UserServiceImpl implements UserService {
         }
 
         existingUser.setEmail(updatedUser.getEmail());
-        existingUser.setPassword(updatedUser.getPassword());
+        existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
         existingUser.setFirstName(updatedUser.getFirstName());
         existingUser.setLastName(updatedUser.getLastName());
         existingUser.setBalance(updatedUser.getBalance());
