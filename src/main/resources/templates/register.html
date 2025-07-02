@@ -12,12 +12,15 @@
         <button class="btn btn-warning fw-bold" disabled>Pay My Buddy</button>
     </div>
     <form th:action="@{/register/save}" th:object="${user}" method="post">
+		<!-- Message global : erreur email déjà existant -->
+		        <div th:if="${emailError}" class="text-danger small mb-2" th:text="${emailError}"></div>
         <div class="mb-2">
             <input type="text" th:field="*{username}" class="form-control" placeholder="Username" required>
         </div>
-        <div class="mb-2">
-            <input type="email" th:field="*{email}" class="form-control" placeholder="Mail" required>
-        </div>
+		<div class="mb-2">
+			<input type="email" th:field="*{email}" class="form-control" placeholder="Adresse email" required>
+			            <div class="text-danger small" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+		       </div>
         <div class="mb-3">
             <input type="password" th:field="*{password}" class="form-control" placeholder="Mot de passe" required>
         </div>
