@@ -4,14 +4,19 @@ import com.paymybuddy.exception.EmailAlreadyExistsException;
 import com.paymybuddy.exception.ResourceNotFoundException;
 import com.paymybuddy.model.User;
 import com.paymybuddy.repository.UserRepository;
+import com.paymybuddy.security.CustomUserDetails;
 import com.paymybuddy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -59,22 +64,33 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User updateUser(Long id, User updatedUser) {
-		User existingUser = userRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Utilisateur non trouvé avec l'id : " + id));
+	    User existingUser = userRepository.findById(id)
+	            .orElseThrow(() -> new ResourceNotFoundException("Utilisateur non trouvé avec l'id : " + id));
 
-		User userWithEmail = userRepository.findByEmail(updatedUser.getEmail());
-		if (userWithEmail != null && !userWithEmail.getId().equals(id)) {
-			throw new EmailAlreadyExistsException("Email déjà existant");
-		}
+	    User userWithEmail = userRepository.findByEmail(updatedUser.getEmail());
+	    if (userWithEmail != null && !userWithEmail.getId().equals(id)) {
+	        throw new EmailAlreadyExistsException("Email déjà existant");
+	    }
 
-		existingUser.setEmail(updatedUser.getEmail());
-		existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
-		existingUser.setUsername(updatedUser.getUsername());
-		existingUser.setFirstName(updatedUser.getFirstName());
-		existingUser.setLastName(updatedUser.getLastName());
-		existingUser.setBalance(updatedUser.getBalance());
+	    existingUser.setEmail(updatedUser.getEmail());
+	    existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+	    existingUser.setUsername(updatedUser.getUsername());
+	    existingUser.setFirstName(updatedUser.getFirstName());
+	    existingUser.setLastName(updatedUser.getLastName());
+	    existingUser.setBalance(updatedUser.getBalance());
 
-		return userRepository.save(existingUser);
+	    User savedUser = userRepository.save(existingUser);
+
+	    // ✅ Re-authentification après modification de l'email
+	    UserDetails userDetails = new CustomUserDetails(savedUser); // ou UserPrincipal
+	    Authentication newAuth = new UsernamePasswordAuthenticationToken(
+	            userDetails,
+	            userDetails.getPassword(),
+	            userDetails.getAuthorities()
+	    );
+	    SecurityContextHolder.getContext().setAuthentication(newAuth);
+
+	    return savedUser;
 	}
 	
 	@Override
