@@ -54,12 +54,12 @@ public class RelationServiceImpl implements RelationService {
     @Override
     public List<String> getRelationsEmails(String userEmail) {
         User user = userRepository.findByEmail(userEmail);
-       /* if (user == null) {
-            throw new UserNotFoundException(userEmail);
-        }*/
+        if (user == null) {
+            throw new UserNotFoundException(userEmail, "/transfer");
+        }
 
         return relationRepository.findByUser(user).stream()
-                .map(rel -> rel.getUser().getEmail())
+                .map(rel -> rel.getFriend().getEmail())
                 .collect(Collectors.toList());
     }
     

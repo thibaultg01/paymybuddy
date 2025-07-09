@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Transférer - Pay My Buddy</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .amount-positive { color: green; }
+    .amount-negative { color: red; }
+  </style>
+</head>
+<body class="bg-light">
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg bg-white border-bottom px-4">
+  <a class="navbar-brand fw-bold" href="#">Pay My Buddy</a>
+  <div class="collapse navbar-collapse">
+    <ul class="navbar-nav ms-auto">
+      <li class="nav-item"><a class="nav-link active text-primary" th:href="@{/transfer}">Transférer</a></li>
+      <li class="nav-item"><a class="nav-link" th:href="@{/profile}">Profil</a></li>
+      <li class="nav-item"><a class="nav-link" th:href="@{/relation/add}">Ajouter relation</a></li>
+      <li class="nav-item">
+        <form th:action="@{/logout}" method="post">
+          <button type="submit" class="btn btn-link nav-link p-0">Se déconnecter</button>
+        </form>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<!-- CONTENU PRINCIPAL -->
+<div class="container mt-5">
+
+  <h2 class="mb-4 text-center">Faire un transfert</h2>
+
+  <!-- MESSAGES -->
+  <div th:if="${error}" class="alert alert-danger text-center" th:text="${error}"></div>
+  <div th:if="${success}" class="alert alert-success text-center" th:text="${success}"></div>
+
+  <!-- FORMULAIRE -->
+  <form method="post" th:action="@{/transfer}" class="row g-3 align-items-end justify-content-center mb-5">
+    <div class="col-md-3">
+      <label for="relationEmail" class="form-label">Sélectionner une relation</label>
+      <select class="form-select" id="relationEmail" name="relationEmail" required>
+        <option value="" disabled selected>-- Choisir un email --</option>
+        <option th:each="email : ${relations}" th:value="${email}" th:text="${email}"></option>
+      </select>
+    </div>
+
+    <div class="col-md-3">
+      <label for="description" class="form-label">Description</label>
+      <input type="text" class="form-control" id="description" name="description" placeholder="Motif du transfert" required>
+    </div>
+
+    <div class="col-md-2">
+      <label for="amount" class="form-label">Montant (€)</label>
+      <input type="number" class="form-control" id="amount" name="amount" step="0.01" min="0.01" required>
+    </div>
+
+    <div class="col-md-1">
+      <button type="submit" class="btn btn-primary w-100">Payer</button>
+    </div>
+  </form>
+
+  <!-- TABLEAU DES TRANSACTIONS -->
+  <h3 class="mb-3">Mes Transactions</h3>
+  <table class="table table-bordered bg-white shadow-sm">
+    <thead class="table-light">
+      <tr>
+        <th>Relations</th>
+        <th>Description</th>
+        <th>Montant</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="t : ${transactions}">
+        <td th:text="${t.email}"></td>
+        <td th:text="${t.description}"></td>
+        <td th:classappend="${t.amount.startsWith('+')} ? 'amount-positive' : 'amount-negative'"
+            th:text="${t.amount}"></td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
+
+</body>
+</html>
