@@ -21,7 +21,7 @@ public class User {
 	private String firstName;
 	private String lastName;
 
-	@Column(nullable = false)
+	@Column(precision = 12, scale = 2, nullable = false)
 	private BigDecimal balance = BigDecimal.ZERO;
 
 	public Long getId() {
