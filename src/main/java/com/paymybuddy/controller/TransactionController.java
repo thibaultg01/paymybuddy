@@ -36,15 +36,15 @@ public class TransactionController {
     private RelationService relationService;
     @GetMapping
     public String showTransferPage(Model model, Principal principal) {
-    	logger.info("tentative recuperation email");
+    	logger.debug("tentative recuperation email");
         String userEmail = principal.getName();
-        logger.info("tentative recuperation relations");
+        logger.debug("tentative recuperation relations");
         List<String> relations = relationService.getRelationsEmails(userEmail);
-        logger.info("tentative ajout attribut relations");
+        logger.debug("tentative ajout attribut relations");
         model.addAttribute("relations", relations);
-        logger.info("tentative recuperation transaction");
+        logger.debug("tentative recuperation transaction");
         List<TransactionDTO> transactions = transactionService.getTransactionHistory(userEmail);
-        logger.info("tentative ajout attribut transaction");
+        logger.debug("tentative ajout attribut transaction");
         model.addAttribute("transactions", transactions);
 
         return "transfer"; // => templates/transfer.html

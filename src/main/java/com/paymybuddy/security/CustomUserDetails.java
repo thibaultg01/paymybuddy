@@ -15,7 +15,7 @@ public class CustomUserDetails implements UserDetails {
     }
 
     @Override public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(); // pas de rôles pour l'instant
+        return List.of();
     }
 
     @Override public String getPassword() {
@@ -23,7 +23,7 @@ public class CustomUserDetails implements UserDetails {
     }
 
     @Override public String getUsername() {
-        return user.getEmail(); // l’email sert d’identifiant
+        return user.getEmail();
     }
 
     @Override public boolean isAccountNonExpired() { return true; }
