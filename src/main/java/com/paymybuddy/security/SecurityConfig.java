@@ -42,7 +42,7 @@ public class SecurityConfig {
             )
             .formLogin(form -> form
                 .loginPage("/login")
-                .defaultSuccessUrl("/web/users", true)
+                .defaultSuccessUrl("/transfer", true)
                 .permitAll()
             )
             .logout(logout -> logout
