@@ -13,4 +13,5 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 
     List<Transaction> findBySender(User sender);
     List<Transaction> findByRecipient(User recipient);
+	Iterable<? extends Transaction> findAllBySenderOrRecipient(User user, User user2);
 }
