@@ -14,4 +14,5 @@ public interface RelationRepository extends JpaRepository<Relation, RelationId> 
     List<Relation> findByUser(User user);
     //List<Relation> findByEmail(Mail email);
     boolean existsByUserAndFriend(User user, User friend);
+    void deleteAllByUser(User user);
 }

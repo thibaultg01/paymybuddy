@@ -22,7 +22,7 @@ import com.paymybuddy.service.UserService;
 @RequestMapping("/relation")
 public class RelationWebController {
 
-	private static final Logger logger = LogManager.getLogger(UserWebController.class);
+	private static final Logger logger = LogManager.getLogger(RelationWebController.class);
 	
     @Autowired
     private RelationService relationService;
