@@ -1,49 +1,39 @@
 <!DOCTYPE html>
+
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Login - Pay My Buddy</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<meta charset="utf-8"/>
+<title>Login - Pay My Buddy</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
 </head>
 <body class="d-flex justify-content-center align-items-center vh-100 bg-light">
-
-<div class="border p-4 bg-white" style="min-width: 300px;">
-    <div class="text-center mb-3">
-        <button class="btn btn-warning fw-bold" disabled>Pay My Buddy</button>
-    </div>
-
-    <!-- ✅ Message après inscription -->
-    <div th:if="${param.registerSuccess}" class="alert alert-success py-1">
+<div class="border p-4 bg-white" style="min-width: 300px;"><h1 class="visually-hidden">Connexion à Pay My Buddy</h1>
+<div class="text-center mb-3">
+<button class="btn btn-warning fw-bold" disabled="">Pay My Buddy</button>
+</div>
+<div aria-live="polite" class="alert alert-success py-1" th:if="${param.registerSuccess}">
         ✅ Compte créé avec succès. Vous pouvez maintenant vous connecter.
     </div>
-
-    <!-- ✅ Message après déconnexion -->
-    <div th:if="${param.logout}" class="alert alert-success py-1">
+<div aria-live="polite" class="alert alert-success py-1" th:if="${param.logout}">
         ✅ Vous avez été déconnecté.
     </div>
-
-    <!-- ❌ Message après erreur -->
-    <div th:if="${param.error}" class="alert alert-danger py-1">
+<div aria-live="polite" class="alert alert-danger py-1" th:if="${param.error}">
         ❌ Email ou mot de passe incorrect.
     </div>
-
-    <form th:action="@{/login}" method="post">
-        <div class="mb-2">
-            <input type="email" name="username" class="form-control" placeholder="Mail" required>
-        </div>
-        <div class="mb-3">
-            <input type="password" name="password" class="form-control" placeholder="Mot de passe" required>
-        </div>
-        <div class="d-grid mb-2">
-            <button type="submit" class="btn btn-primary">Se connecter</button>
-        </div>
-    </form>
-
-    <!-- 👇 Nouveau bouton S'inscrire -->
-    <div class="text-center">
-        <a th:href="@{/register}" class="btn btn-outline-secondary btn-sm">S'inscrire</a>
-    </div>
+<form method="post" th:action="@{/login}">
+<div class="mb-2">
+<label class="form-label visually-hidden" for="username">Adresse mail</label><input class="form-control" id="username" name="username" placeholder="Adresse mail" required="" type="email"/>
 </div>
-
+<div class="mb-3">
+<label class="form-label visually-hidden" for="password">Mot de passe</label><input class="form-control" id="password" name="password" placeholder="Mot de passe" required="" type="password"/>
+</div>
+<div class="d-grid mb-2">
+<button class="btn btn-primary" type="submit">Se connecter</button>
+</div>
+</form>
+<div class="text-center">
+<a class="btn btn-outline-secondary btn-sm" th:href="@{/register}">S'inscrire</a>
+</div>
+</div>
 </body>
 </html>

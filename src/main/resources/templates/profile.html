@@ -7,17 +7,17 @@
 </head>
 <body class="bg-light">
 
-<nav class="navbar navbar-light bg-white px-5 shadow-sm">
+<nav class="navbar navbar-light bg-white border-bottom px-4">
     <span class="navbar-brand fw-bold">Pay My Buddy</span>
     <div>
         <a class="nav-link d-inline" href="/transfer">Transférer</a>
-        <a class="nav-link d-inline fw-bold" href="/profile">Profil</a>
+        <a class="nav-link d-inline active text-primary" href="/profile">Profil</a>
         <a class="nav-link d-inline" href="/relation/add">Ajouter relation</a>
-        <a class="nav-link d-inline text-danger" href="/login?logout">Se déconnecter</a>
+        <a class="nav-link d-inline" href="/login?logout">Se déconnecter</a>
     </div>
 </nav>
 
-<div class="container d-flex justify-content-center align-items-center vh-100">
+<div class="container d-flex justify-content-center align-items-center vh-100"><h1 class="visually-hidden">Profil utilisateur</h1>
     <div class="bg-white border rounded p-4" style="min-width: 400px;">
         <form th:object="${user}">
             <div class="mb-3 d-flex justify-content-between">
