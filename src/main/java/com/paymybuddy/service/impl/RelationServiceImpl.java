@@ -36,11 +36,6 @@ public class RelationServiceImpl implements RelationService {
         Relation relation = new Relation(user, friend);
         return relationRepository.save(relation);
     }
-
-    @Override
-    public List<Relation> getRelations(User user) {
-        return relationRepository.findByUser(user);
-    }
     
     @Override
 	public User getUserByEmail(String email) {
@@ -61,16 +56,5 @@ public class RelationServiceImpl implements RelationService {
         return relationRepository.findByUser(user).stream()
                 .map(rel -> rel.getFriend().getEmail())
                 .collect(Collectors.toList());
-    }
-    
-    @Override
-    public void deleteFriend(Long userId, Long friendId) {
-        Relation.RelationId relationId = new Relation.RelationId(userId, friendId);
-
-        if (!relationRepository.existsById(relationId)) {
-            throw new ResourceNotFoundException("Relation introuvable entre user " + userId + " et " + friendId);
-        }
-
-        relationRepository.deleteById(relationId);
     }
 }

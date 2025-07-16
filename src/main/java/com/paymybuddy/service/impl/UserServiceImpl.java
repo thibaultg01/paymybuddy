@@ -30,19 +30,6 @@ public class UserServiceImpl implements UserService {
 	private PasswordEncoder passwordEncoder;
 
 	@Override
-	public List<User> getAllUsers() {
-		logger.debug("Récupération de tous les utilisateurs");
-		return userRepository.findAll();
-	}
-
-	@Override
-	public User getUserById(Long id) {
-		logger.debug("Recherche de l'utilisateur avec l'ID : {}", id);
-		return userRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Utilisateur non trouvé avec l'id : " + id));
-	}
-
-	@Override
 	public User getUserByEmail(String email) {
 		User user = userRepository.findByEmail(email);
 		if (user == null) {
