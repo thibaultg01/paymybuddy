@@ -21,80 +21,67 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class UserServiceImplTest {
 
-    @Mock
-    private UserRepository userRepository;
+	@Mock
+	private UserRepository userRepository;
 
-    @InjectMocks
-    private UserServiceImpl userService;
+	@InjectMocks
+	private UserServiceImpl userService;
 
-    private User user;
+	private User user;
 
-    @BeforeEach
-    void setUp() {
-        user = new User();
-        user.setId(1L);
-        user.setEmail("test@example.com");
-        user.setUsername("testuser");
-        user.setPassword("securepassword");
-        user.setFirstName("Test");
-        user.setLastName("User");
-        user.setBalance(BigDecimal.valueOf(50.00));
-    }
+	@BeforeEach
+	void setUp() {
+		user = new User();
+		user.setId(1L);
+		user.setEmail("test@example.com");
+		user.setUsername("testuser");
+		user.setPassword("securepassword");
+		user.setFirstName("Test");
+		user.setLastName("User");
+		user.setBalance(BigDecimal.valueOf(50.00));
+	}
 
-    @Test
-    void getUserByEmail_WhenUserExists_ShouldReturnUser() {
-        when(userRepository.findByEmail("test@example.com")).thenReturn(user);
+	@Test
+	void getUserByEmail_WhenUserExists_ShouldReturnUser() {
+		when(userRepository.findByEmail("test@example.com")).thenReturn(user);
 
-        User result = userService.getUserByEmail("test@example.com");
+		User result = userService.getUserByEmail("test@example.com");
 
-        assertThat(result).isNotNull();
-        assertThat(result.getEmail()).isEqualTo("test@example.com");
-        verify(userRepository, times(1)).findByEmail("test@example.com");
-    }
+		assertThat(result).isNotNull();
+		assertThat(result.getEmail()).isEqualTo("test@example.com");
+		verify(userRepository, times(1)).findByEmail("test@example.com");
+	}
 
-    @Test
-    void getUserByEmail_WhenUserNotFound_ShouldThrowException() {
-        when(userRepository.findByEmail("notfound@example.com")).thenReturn(null);
+	@Test
+	void getUserByEmail_WhenUserNotFound_ShouldThrowException() {
+		when(userRepository.findByEmail("notfound@example.com")).thenReturn(null);
 
-        assertThrows(ResourceNotFoundException.class,
-                () -> userService.getUserByEmail("notfound@example.com"));
+		assertThrows(ResourceNotFoundException.class, () -> userService.getUserByEmail("notfound@example.com"));
 
-        verify(userRepository).findByEmail("notfound@example.com");
-    }
+		verify(userRepository).findByEmail("notfound@example.com");
+	}
 
-    /*@Test
-    void saveUser_ShouldCallRepositorySave() {
-        when(userRepository.save(user)).thenReturn(user);
+	@Test
+	void checkEmailUniqueness_WhenEmailUsedByAnotherUser_ShouldThrow() {
+		User other = new User();
+		other.setId(2L);
+		other.setEmail("test@example.com");
 
-        User result = userService.createUser(user);
+		when(userRepository.findByEmail("test@example.com")).thenReturn(other);
 
-        assertThat(result).isNotNull();
-        assertThat(result.getUsername()).isEqualTo("testuser");
-        verify(userRepository, times(1)).save(user);
-    }*/
+		assertThrows(EmailAlreadyExistsException.class, () -> userService.checkEmailUniqueness(1L, "test@example.com"));
+	}
 
-    @Test
-    void checkEmailUniqueness_WhenEmailUsedByAnotherUser_ShouldThrow() {
-        User other = new User();
-        other.setId(2L);
-        other.setEmail("test@example.com");
+	@Test
+	void checkEmailUniqueness_WhenEmailUnusedOrSameUser_ShouldPass() {
+		// email used by same user (no error)
+		when(userRepository.findByEmail("test@example.com")).thenReturn(user);
 
-        when(userRepository.findByEmail("test@example.com")).thenReturn(other);
+		assertDoesNotThrow(() -> userService.checkEmailUniqueness(1L, "test@example.com"));
 
-        assertThrows(EmailAlreadyExistsException.class,
-                () -> userService.checkEmailUniqueness(1L, "test@example.com"));
-    }
+		// email not used (return null)
+		when(userRepository.findByEmail("new@example.com")).thenReturn(null);
 
-    @Test
-    void checkEmailUniqueness_WhenEmailUnusedOrSameUser_ShouldPass() {
-        // email used by same user (no error)
-        when(userRepository.findByEmail("test@example.com")).thenReturn(user);
-
-        assertDoesNotThrow(() -> userService.checkEmailUniqueness(1L, "test@example.com"));
-
-        // email not used (return null)
-        when(userRepository.findByEmail("new@example.com")).thenReturn(null);
-
-        assertDoesNotThrow(() -> userService.checkEmailUniqueness(1L, "new@example.com"));
-    }
+		assertDoesNotThrow(() -> userService.checkEmailUniqueness(1L, "new@example.com"));
+	}
 }

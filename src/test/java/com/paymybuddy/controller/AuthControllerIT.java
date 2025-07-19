@@ -12,7 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -41,17 +40,13 @@ public class AuthControllerIT {
 
 	@Test
 	void loginPage_ShouldReturnLoginView() throws Exception {
-	    mockMvc.perform(get("/login"))
-	           .andExpect(status().isOk())
-	           .andExpect(view().name("login"));
+		mockMvc.perform(get("/login")).andExpect(status().isOk()).andExpect(view().name("login"));
 	}
 
 	@Test
 	void registerPage_ShouldReturnRegisterView() throws Exception {
-	    mockMvc.perform(get("/register"))
-	           .andExpect(status().isOk())
-	           .andExpect(view().name("register"))
-	           .andExpect(model().attributeExists("user"));
+		mockMvc.perform(get("/register")).andExpect(status().isOk()).andExpect(view().name("register"))
+				.andExpect(model().attributeExists("user"));
 	}
 
 	@Test
@@ -76,9 +71,7 @@ public class AuthControllerIT {
 		mockMvc.perform(post("/register/save").param("username", "existinguser").param("email", "existing@example.com")
 				.param("password", "secret").with(csrf())).andExpect(status().is3xxRedirection());
 
-		mockMvc.perform(post("/register/save").param("username", "newuser").param("email", "existing@example.com") // email
-																													// déjà
-																													// utilisé
+		mockMvc.perform(post("/register/save").param("username", "newuser").param("email", "existing@example.com")
 				.param("password", "newpassword").with(csrf())).andExpect(status().is3xxRedirection())
 				.andExpect(redirectedUrl("/register")).andExpect(flash().attributeExists("emailError"))
 				.andExpect(flash().attribute("emailError", "Email déjà existant"));

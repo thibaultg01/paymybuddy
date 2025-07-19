@@ -30,7 +30,7 @@ class TransactionControllerTest {
     
 
     @MockBean
-    private RelationService relationService;
+	private RelationService relationService;
 
     @MockBean
     private TransactionService transactionService;

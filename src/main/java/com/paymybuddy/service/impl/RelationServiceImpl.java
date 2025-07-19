@@ -18,26 +18,26 @@ import java.util.stream.Collectors;
 public class RelationServiceImpl implements RelationService {
 
 	@Autowired
-    private RelationRepository relationRepository;
-	
+	private RelationRepository relationRepository;
+
 	@Autowired
-    private  UserRepository userRepository;
+	private UserRepository userRepository;
 
-    @Override
-    public Relation addFriend(User user, User friend) {
-        if (user.equals(friend)) {
-            throw new RelationRulesException("Impossible d’ajouter soi-même comme ami.");
-        }
+	@Override
+	public Relation addFriend(User user, User friend) {
+		if (user.equals(friend)) {
+			throw new RelationRulesException("Impossible d’ajouter soi-même comme ami.");
+		}
 
-        if (relationRepository.existsByUserAndFriend(user, friend)) {
-            throw new RelationRulesException("Relation déjà existante.");
-        }
+		if (relationRepository.existsByUserAndFriend(user, friend)) {
+			throw new RelationRulesException("Relation déjà existante.");
+		}
 
-        Relation relation = new Relation(user, friend);
-        return relationRepository.save(relation);
-    }
-    
-    @Override
+		Relation relation = new Relation(user, friend);
+		return relationRepository.save(relation);
+	}
+
+	@Override
 	public User getUserByEmail(String email) {
 		User user = userRepository.findByEmail(email);
 		if (user == null) {
@@ -45,16 +45,15 @@ public class RelationServiceImpl implements RelationService {
 		}
 		return user;
 	}
-    
-    @Override
-    public List<String> getRelationsEmails(String userEmail) {
-        User user = userRepository.findByEmail(userEmail);
-        if (user == null) {
-            throw new UserNotFoundException(userEmail, "/transfer");
-        }
 
-        return relationRepository.findByUser(user).stream()
-                .map(rel -> rel.getFriend().getEmail())
-                .collect(Collectors.toList());
-    }
+	@Override
+	public List<String> getRelationsEmails(String userEmail) {
+		User user = userRepository.findByEmail(userEmail);
+		if (user == null) {
+			throw new UserNotFoundException(userEmail, "/transfer");
+		}
+
+		return relationRepository.findByUser(user).stream().map(rel -> rel.getFriend().getEmail())
+				.collect(Collectors.toList());
+	}
 }

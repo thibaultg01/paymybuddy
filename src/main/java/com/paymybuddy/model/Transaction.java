@@ -15,26 +15,26 @@ import jakarta.persistence.ManyToOne;
 @Entity
 public class Transaction {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "sender_id")
-    private User sender;
+	@ManyToOne
+	@JoinColumn(name = "sender_id")
+	private User sender;
 
-    @ManyToOne
-    @JoinColumn(name = "receiver_id")
-    private User recipient;
+	@ManyToOne
+	@JoinColumn(name = "receiver_id")
+	private User recipient;
 
-    @Column(precision = 10, scale = 2)
-    private BigDecimal amount;
+	@Column(precision = 10, scale = 2)
+	private BigDecimal amount;
 
-    private LocalDateTime timestamp;
-    
-    @Lob
-    @Column(columnDefinition = "TEXT")
-    private String description;
+	private LocalDateTime timestamp;
+
+	@Lob
+	@Column(columnDefinition = "TEXT")
+	private String description;
 
 	public Long getId() {
 		return id;
@@ -77,11 +77,11 @@ public class Transaction {
 	}
 
 	public String getDescription() {
-	    return description;
+		return description;
 	}
 
 	public void setDescription(String description) {
-	    this.description = description;
+		this.description = description;
 	}
-    
+
 }

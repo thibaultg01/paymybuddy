@@ -21,62 +21,52 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 @WebMvcTest(UserWebController.class)
 class UserWebControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+	@Autowired
+	private MockMvc mockMvc;
 
-    @MockBean
-    private UserService userService;
+	@MockBean
+	private UserService userService;
 
-    private User mockUser;
+	private User mockUser;
 
-    @BeforeEach
-    void setup() {
-        mockUser = new User();
-        mockUser.setId(1L);
-        mockUser.setEmail("user@example.com");
-        mockUser.setUsername("yolo45");
-        mockUser.setPassword("password");
-        mockUser.setBalance(BigDecimal.valueOf(50));
-    }
+	@BeforeEach
+	void setup() {
+		mockUser = new User();
+		mockUser.setId(1L);
+		mockUser.setEmail("user@example.com");
+		mockUser.setUsername("yolo45");
+		mockUser.setPassword("password");
+		mockUser.setBalance(BigDecimal.valueOf(50));
+	}
 
-    @Test
-    @WithMockUser(username = "user@example.com")
-    void showProfile_ReturnsProfileView() throws Exception {
-        given(userService.getUserByEmail("user@example.com")).willReturn(mockUser);
+	@Test
+	@WithMockUser(username = "user@example.com")
+	void showProfile_ReturnsProfileView() throws Exception {
+		given(userService.getUserByEmail("user@example.com")).willReturn(mockUser);
 
-        mockMvc.perform(get("/profile"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("profile"))
-                .andExpect(model().attributeExists("user"));
-    }
+		mockMvc.perform(get("/profile")).andExpect(status().isOk()).andExpect(view().name("profile"))
+				.andExpect(model().attributeExists("user"));
+	}
 
-    @Test
-    @WithMockUser(username = "user@example.com")
-    void showEditProfileForm_ReturnsEditProfileView() throws Exception {
-        given(userService.getUserByEmail("user@example.com")).willReturn(mockUser);
+	@Test
+	@WithMockUser(username = "user@example.com")
+	void showEditProfileForm_ReturnsEditProfileView() throws Exception {
+		given(userService.getUserByEmail("user@example.com")).willReturn(mockUser);
 
-        mockMvc.perform(get("/profile/edit"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("edit-profile"))
-                .andExpect(model().attributeExists("user"));
-    }
+		mockMvc.perform(get("/profile/edit")).andExpect(status().isOk()).andExpect(view().name("edit-profile"))
+				.andExpect(model().attributeExists("user"));
+	}
 
+	@Test
+	@WithMockUser(username = "user@example.com")
+	void updateProfile_WithValidData_RedirectsToProfile() throws Exception {
+		given(userService.getUserByEmail("user@example.com")).willReturn(mockUser);
+		willDoNothing().given(userService).checkEmailUniqueness(any(), any());
+		given(userService.updateUser(eq(1L), ArgumentMatchers.any(User.class))).willReturn(mockUser);
 
-@Test
-@WithMockUser(username = "user@example.com")
-void updateProfile_WithValidData_RedirectsToProfile() throws Exception {
-    given(userService.getUserByEmail("user@example.com")).willReturn(mockUser);
-    willDoNothing().given(userService).checkEmailUniqueness(any(), any());
-    given(userService.updateUser(eq(1L), ArgumentMatchers.any(User.class))).willReturn(mockUser);
-
-    mockMvc.perform(post("/profile/edit")
-            .param("username", "updatedUser")
-            .param("email", "user@example.com")
-            .param("password", "newpassword")
-            .with(csrf())
-    )
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/profile"));
-}
+		mockMvc.perform(post("/profile/edit").param("username", "updatedUser").param("email", "user@example.com")
+				.param("password", "newpassword").with(csrf())).andExpect(status().is3xxRedirection())
+				.andExpect(redirectedUrl("/profile"));
+	}
 
 }

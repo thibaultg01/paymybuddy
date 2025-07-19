@@ -11,8 +11,9 @@ import java.util.List;
 @Repository
 public interface RelationRepository extends JpaRepository<Relation, RelationId> {
 
-    List<Relation> findByUser(User user);
-    //List<Relation> findByEmail(Mail email);
-    boolean existsByUserAndFriend(User user, User friend);
-    void deleteAllByUser(User user);
+	List<Relation> findByUser(User user);
+
+	boolean existsByUserAndFriend(User user, User friend);
+
+	void deleteAllByUser(User user);
 }

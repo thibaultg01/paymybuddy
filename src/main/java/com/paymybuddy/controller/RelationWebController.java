@@ -23,33 +23,33 @@ import com.paymybuddy.service.UserService;
 public class RelationWebController {
 
 	private static final Logger logger = LogManager.getLogger(RelationWebController.class);
-	
-    @Autowired
-    private RelationService relationService;
 
-    @Autowired
-    private UserService userService;
+	@Autowired
+	private RelationService relationService;
 
-    @GetMapping("/add")
-    public String showAddFriendForm(Model model) {
-        model.addAttribute("friendDTO", new FriendDTO());
-        return "add-friend";
-    }
+	@Autowired
+	private UserService userService;
 
-    @PostMapping("/add")
-    public String addFriend(@ModelAttribute("friendDTO") FriendDTO friendDTO) {
-        // Récupérer l'email de l'utilisateur connecté
-    	logger.debug("tentative obtention email");
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        logger.debug("tentative obtention utilisateur");
-        User user = relationService.getUserByEmail(email);
-        logger.debug("tentative obtention utilisateur amis");
-        User friend = relationService.getUserByEmail(friendDTO.getEmail());
-        if (friend == null) {
-            throw new ResourceNotFoundException("Aucun utilisateur trouvé avec cet email.");
-        }
+	@GetMapping("/add")
+	public String showAddFriendForm(Model model) {
+		model.addAttribute("friendDTO", new FriendDTO());
+		return "add-friend";
+	}
 
-        relationService.addFriend(user, friend);
-        return "redirect:/relation/add?success";
-    }
+	@PostMapping("/add")
+	public String addFriend(@ModelAttribute("friendDTO") FriendDTO friendDTO) {
+		// Récupérer l'email de l'utilisateur connecté
+		logger.debug("tentative obtention email");
+		String email = SecurityContextHolder.getContext().getAuthentication().getName();
+		logger.debug("tentative obtention utilisateur");
+		User user = relationService.getUserByEmail(email);
+		logger.debug("tentative obtention utilisateur amis");
+		User friend = relationService.getUserByEmail(friendDTO.getEmail());
+		if (friend == null) {
+			throw new ResourceNotFoundException("Aucun utilisateur trouvé avec cet email.");
+		}
+
+		relationService.addFriend(user, friend);
+		return "redirect:/relation/add?success";
+	}
 }
